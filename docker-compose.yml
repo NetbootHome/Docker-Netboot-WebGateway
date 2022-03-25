@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+
+  service:
+    build:
+      context: ./config/
+      dockerfile: dockerfile-service
+    command:
+      # Configure entrypoint
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      # SSL configuration
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      # Global HTTP -> HTTPS
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      # Enable dashboard
+      - "--api.dashboard=true"
+      # Docker configuration
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      # Other
+      - "--log.level=INFO"
+      - "--pilot.token=${PILOT_TOKEN}"
+      # Disable SSL verification on backend
+      - "--serverstransport.insecureskipverify=true"
+    volumes:
+      # Traefik configuration
+      - "/docker/data/shared/webgateway/config:/etc/traefik/"
+      # To persist certificates
+      - "/docker/data/shared/webgateway/certificates:/letsencrypt"
+      # So that Traefik can listen to the Docker events
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      # Set the container local time
+      - "/etc/localtime:/etc/localtime:ro"
+    networks:
+      webgateway: {}
+      default: {}
+    ports:
+      - "80:80"
+      - "443:443"
+    labels:
+      # Enable Traefik for it's own backend
+      - traefik.enable=true
+      # Dashboard
+      - traefik.http.routers.dashboard.rule=Host(`traefik.netboot.fr`)
+      - traefik.http.routers.dashboard.entrypoints=websecure
+      - traefik.http.routers.dashboard.tls=true
+      - traefik.http.routers.dashboard.tls.certresolver=letsencrypt
+      - traefik.http.routers.dashboard.service=api@internal
+      - traefik.http.services.dashboard.loadbalancer.server.port=8080
+    restart: always
+    
+networks:
+  webgateway:
+    external: true
