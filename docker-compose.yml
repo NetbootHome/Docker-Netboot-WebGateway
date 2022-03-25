@@ -3,9 +3,7 @@ version: '3.7'
 services:
 
   service:
-    build:
-      context: ./config/
-      dockerfile: dockerfile-service
+    build: ./docker/service
     command:
       # Configure entrypoint
       - "--entrypoints.web.address=:80"
