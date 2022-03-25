@@ -1,0 +1,26 @@
+name: Build
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.gitignore'
+      - '**/*.gitattributes'
+jobs:
+  build:
+    runs-on: [azure]
+    steps:
+      - name: Checking out the repository
+        uses: actions/checkout@v3
+      - name: Setup environment variables
+        env:
+          PILOT_TOKEN: ${{secrets.PILOT_TOKEN}}
+          ACME_EMAIL: ${{secrets.ACME_EMAIL}}
+        run: |
+          touch .env
+          echo PILOT_TOKEN='${{ secrets.PILOT_TOKEN }}' >> .env
+          echo ACME_EMAIL='${{ secrets.ACME_EMAIL }}' >> .env
+      - name: Stop Containers
+        run: "sudo /usr/local/bin/docker-compose -p webgateway stop"
+      - name: Start Containers
+        run: "sudo /usr/local/bin/docker-compose -p webgateway up -d --build"
