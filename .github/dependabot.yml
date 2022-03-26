@@ -5,11 +5,17 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    target-branch: "main"
     reviewers:
       - "thomas-illiet"
+    labels:
+      - "github dependencies"
   - package-ecosystem: "docker"
     directory: "/docker/service"
     schedule:
       interval: "daily"
+    target-branch: "main"
     reviewers:
       - "thomas-illiet"
+    labels:
+      - "docker dependencies"
