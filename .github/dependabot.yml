@@ -5,7 +5,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    target-branch: "main"
     reviewers:
       - "thomas-illiet"
     labels:
@@ -14,7 +13,6 @@ updates:
     directory: "/docker/service"
     schedule:
       interval: "daily"
-    target-branch: "main"
     reviewers:
       - "thomas-illiet"
     labels:
