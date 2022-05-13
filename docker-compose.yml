@@ -51,6 +51,11 @@ services:
       - traefik.http.routers.dashboard.tls.certresolver=letsencrypt
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.services.dashboard.loadbalancer.server.port=8080
+    healthcheck:
+      test: ["CMD", "curl", "-kILs", "--fail", "http://localhost:80"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: always
     
 networks:
