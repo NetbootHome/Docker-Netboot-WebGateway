@@ -5,7 +5,11 @@ services:
   service:
     build: docker/service
     command:
-      # Configure entrypoint
+      # Ping entrypoint
+      - "--ping=true"
+      - "--ping.entryPoint=ping"
+      - "--entryPoints.ping.address=:8081"
+      # Global entrypoint
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       # SSL configuration
@@ -52,7 +56,7 @@ services:
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.services.dashboard.loadbalancer.server.port=8080
     healthcheck:
-      test: ["CMD", "curl", "-kILs", "--fail", "http://localhost:80"]
+      test: ["CMD", "wget", "-c", "http://localhost:8081/ping"]
       interval: 10s
       timeout: 5s
       retries: 5
