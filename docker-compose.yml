@@ -18,7 +18,7 @@ services:
     networks:
       default: {}
     depends_on:
-      - traefik
+      - service
       
   service:
     build: docker/service
