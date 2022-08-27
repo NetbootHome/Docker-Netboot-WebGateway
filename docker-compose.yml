@@ -45,12 +45,15 @@ services:
     labels:
       # Enable Traefik for it's own backend
       - traefik.enable=true
+      # middleware redirect
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
       # Dashboard
       - traefik.http.routers.dashboard.rule=Host(`traefik.netboot.fr`)
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.tls=true
       - traefik.http.routers.dashboard.tls.certresolver=letsencrypt
       - traefik.http.routers.dashboard.service=api@internal
+      - traefik.http.routers.dashboard.middlewares=redirect-to-https@docker
       - traefik.http.services.dashboard.loadbalancer.server.port=8080
     healthcheck:
       test: ["CMD", "wget", "-c", "http://localhost:8081/ping"]
