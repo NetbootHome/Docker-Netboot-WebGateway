@@ -47,6 +47,7 @@ services:
       - traefik.enable=true
       # middleware redirect
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true
       # Dashboard
       - traefik.http.routers.dashboard.rule=Host(`traefik.netboot.fr`)
       - traefik.http.routers.dashboard.entrypoints=websecure
