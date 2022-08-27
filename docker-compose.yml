@@ -24,7 +24,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       # Other
       - "--log.level=INFO"
-      - "--pilot.token=${PILOT_TOKEN}"
+      - "--hub.token=${HUB_TOKEN}"
       # Disable SSL verification on backend
       - "--serverstransport.insecureskipverify=true"
     volumes:
