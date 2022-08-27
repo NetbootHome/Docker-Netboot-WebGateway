@@ -2,6 +2,24 @@ version: '3.7'
 
 services:
 
+  agent:
+    image: ghcr.io/traefik/hub-agent-traefik:experimental
+    pull_policy: always
+    container_name: hub-agent
+    restart: "on-failure"
+    command:
+      - run
+      - --hub.token==${HUB_TOKEN}
+      - --auth-server.advertise-url=http://hub-agent
+      - --traefik.host=service
+      - --traefik.tls.insecure=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      default: {}
+    depends_on:
+      - traefik
+      
   service:
     build: docker/service
     command:
@@ -22,9 +40,12 @@ services:
       # Docker configuration
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      # Enable Hub communication (open the port 9900 and 9901 by default)
+      - "--experimental.hub=true"
+      - "--hub.tls.insecure=true"
+      - "--metrics.prometheus.addrouterslabels=true"
       # Other
       - "--log.level=INFO"
-      - "--hub.token=${HUB_TOKEN}"
       # Disable SSL verification on backend
       - "--serverstransport.insecureskipverify=true"
     volumes:
