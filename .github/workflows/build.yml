@@ -23,6 +23,6 @@ jobs:
           echo HUB_TOKEN='${{ secrets.HUB_TOKEN }}' >> .env
           echo ACME_EMAIL='${{ secrets.ACME_EMAIL }}' >> .env
       - name: Stop Containers
-        run: "sudo /usr/local/bin/docker-compose -p webgateway stop"
+        run: "sudo /usr/local/bin/docker-compose -p netboot_webgateway stop"
       - name: Start Containers
-        run: "sudo /usr/local/bin/docker-compose -p webgateway up -d --build"
+        run: "sudo /usr/local/bin/docker-compose -p netboot_webgateway up -d --build"
